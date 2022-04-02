@@ -23,6 +23,7 @@ public class MainActivity extends AppCompatActivity {
 
     private ListView mUserList;
     private ArrayList<String> mUserNames = new ArrayList<>();
+    private ArrayList<String> mKeys = new ArrayList<>();
 
 
     @Override
@@ -43,11 +44,23 @@ public class MainActivity extends AppCompatActivity {
             public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
                 String value = snapshot.getValue(String.class);
                 mUserNames.add(value);
+
+                String key = snapshot.getKey(); //01, 02, 03, 04
+                mKeys.add(key); //[01], [01, 02], [01, 02, 03], [01, 02, 03, 04]
+
                 arrayAdapter.notifyDataSetChanged();
             }
 
             @Override
             public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+
+                String value = snapshot.getValue(String.class);
+                String key = snapshot.getKey();
+
+                int index = mKeys.indexOf(key);//gets the index of the matching key that was just updated
+                mUserNames.set(index, value);//overrides the value of that index
+
+                arrayAdapter.notifyDataSetChanged();
 
             }
 
